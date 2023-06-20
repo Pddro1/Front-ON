@@ -7,20 +7,24 @@ import Tema from '../../models/Tema'
 import { TokenState } from '../../../store/token/TokenReducer';
 import { busca, buscaId, post, put } from '../../services/Service'
 import { toast } from 'react-toastify'
-
-
+import './CadastroPostagem.css'
+import User from '../../models/User';
 
 function CadastroPostagem() {
 
   let navigate = useNavigate();
   const { id } = useParams<{ id: string }>()
   const [temas, setTemas] = useState<Tema[]>([]);
-  const token = useSelector<TokenState, TokenState['tokens']>(
-    (state) => state.tokens
+  const token = useSelector<TokenState, TokenState['token']>(
+    (state) => state.token
+  )
+
+  const userId = useSelector<TokenState, TokenState['id']>(
+    (state) => state.id
   )
 
   const [tema, setTema] = useState<Tema>({
-    id:0,
+    id: 0,
     descricao: '',
   });
 
@@ -28,16 +32,26 @@ function CadastroPostagem() {
     id: 0,
     titulo: '',
     texto: '',
+    foto: '',
     data: '',
     tema: null,
   })
 
+  const [usuario, setUsuario] = useState<User>({
+    id: +userId,
+    nome: '',
+    usuario: '',
+    cnpj: '',
+    senha: '',
+    foto: '',
+  })
+
 
   useEffect(() => {
-    if(token === '') {
+    if (token === '') {
       // alert('Você precisa estar logado!')
       toast.warn('Você precisa estar logado.', {
-        position: 'top-right', 
+        position: 'top-right',
         autoClose: 2000, //2 segundos
         hideProgressBar: false,
         closeOnClick: true,
@@ -45,7 +59,7 @@ function CadastroPostagem() {
         draggable: true,
         progress: 0,
         theme: "light",
-    })
+      })
       navigate("/login")
     }
   }, [token])
@@ -55,13 +69,14 @@ function CadastroPostagem() {
     setPostagem({
       ...postagem,
       tema: tema,
-    })
-  }, [tema])
+      usuario: usuario
+    });
+  }, [tema]);
 
 
   async function findByIdPostagem(id: string) {
     await buscaId(`/postagens/${id}`, setPostagem, {
-      headers: {"Authorization": token,},
+      headers: { "Authorization": token, },
     });
   }
 
@@ -74,7 +89,7 @@ function CadastroPostagem() {
 
   async function getTemas() {
     await busca("/temas", setTemas, {
-      headers: {'Authorization': token}
+      headers: { 'Authorization': token }
     })
   }
 
@@ -90,63 +105,60 @@ function CadastroPostagem() {
     event.preventDefault();
 
     if (id !== undefined) {
-        put(`/postagens`, postagem, setPostagem, {
-            headers: { 
-                Authorization: token 
-            },
-        })
-        toast.success('Postagem atualizada com sucesso!', {
-          position: 'top-right', 
-          autoClose: 2000, //2 segundos
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: 0,
-          theme: "light",
+      put(`/postagens`, postagem, setPostagem, {
+        headers: {
+          Authorization: token
+        },
+      })
+      toast.success('Postagem atualizada com sucesso!', {
+        position: 'top-right',
+        autoClose: 2000, //2 segundos
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "light",
       })
 
 
     } else {
-        post(`/postagens`, postagem, setPostagem, {
-            headers: { 
-                Authorization: token 
-            },
-          })
-          toast.success('Postagem cadastrada com sucesso!', {
-            position: 'top-right', 
-            autoClose: 2000, //2 segundos
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: 0,
-            theme: "light",
-        })
-          
-    }
-    back()
-}
+      post(`/postagens`, postagem, setPostagem, {
+        headers: {
+          Authorization: token
+        },
+      })
+      toast.success('Postagem cadastrada com sucesso!', {
+        position: 'top-right',
+        autoClose: 2000, //2 segundos
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "light",
+      })
 
-function back() {
+    }
     navigate('/postagens')
-}
+  }
+
 
 
   return (
     <>
-      <Container>
+      <Container style={{marginTop: '150px'}} >
         <form onSubmit={onSubmit}>
           <Typography
             variant='h3'
             color='textSecondary'
             component='h1'
             align='center'
-            >
-              Postagens
+          >
+            Postagens
           </Typography>
 
-          <TextField 
+          <TextField
             value={postagem.titulo}
             onChange={(event: ChangeEvent<HTMLInputElement>) => atualizarPostagem(event)}
             variant='filled'
@@ -158,13 +170,25 @@ function back() {
             required
           />
 
-          <TextField 
+          <TextField
             value={postagem.texto}
             onChange={(event: ChangeEvent<HTMLInputElement>) => atualizarPostagem(event)}
             variant='filled'
-            id='texto'
+            id='textoPostagem'
             name='texto'
             label='Texto'
+            fullWidth
+            margin='normal'
+            required
+          />
+
+          <TextField
+            value={postagem.foto}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => atualizarPostagem(event)}
+            variant='filled'
+            id='fotoPostagem'
+            name='foto'
+            label='foto'
             fullWidth
             margin='normal'
             required
@@ -177,12 +201,12 @@ function back() {
               labelId='tema-label'
               id='tema-label'
               onChange={(event) => buscaId(`/temas/${event.target.value}`, setTema, {
-                headers: {'Authorization': token}
+                headers: { 'Authorization': token }
               })}
             >
 
               {temas.map((item) => (
-                <MenuItem value={item.id} style={{ display: 'block'}}>
+                <MenuItem value={item.id} style={{ display: 'block' }}>
                   {item.descricao}
                 </MenuItem>
               ))}
@@ -191,12 +215,12 @@ function back() {
             <Button
               type='submit'
               variant='contained'
-              style={{ backgroundColor: "#06283d", color: "white" }}
-              >
-                Postar
+              style={{ backgroundColor: "#d8d8d8", color: "white", fontWeight: 'bold' }}
+            >
+              Postar
             </Button>
           </FormControl>
-            
+
         </form>
       </Container>
     </>

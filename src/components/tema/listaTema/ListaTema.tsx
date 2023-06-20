@@ -2,6 +2,7 @@ import { Container, Box, Card, CardContent, Typography, CardActions, Button } fr
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify';
 import { TokenState } from '../../../store/token/TokenReducer';
 import Tema from '../../models/Tema';
 import { busca } from '../../services/Service';
@@ -10,13 +11,22 @@ function ListaTema() {
 
   let navigate = useNavigate();
   const [temas, setTemas] = useState<Tema[]>([]);
-  const token = useSelector<TokenState, TokenState['tokens']>(
-    (state) => state.tokens
+  const token = useSelector<TokenState, TokenState['token']>(
+    (state) => state.token
   )
 
   useEffect(() => {
     if(token === '') {
-      alert('Você precisa estar Logado!')
+      toast.warn('Você precisa estar logado.', {
+        position: 'top-right', 
+        autoClose: 2000, //2 segundos
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "light",
+    })
       navigate('/login')
     }
   }, [token])
@@ -34,7 +44,7 @@ function ListaTema() {
 
   return (
     <>
-      <Container>
+      <Container style={{paddingTop:'100px', backgroundColor:'#eef1ff'}}>
         {/* mapeamento do array de temas, para recriar a estrutura inteira para cada tema existente */}
         {temas.map((tema) => (
           <Box m={2} key={tema.id}>
@@ -57,9 +67,7 @@ function ListaTema() {
                       <Button
                         variant="contained"
                         size="medium"
-                        style={{ backgroundColor: '#D8D8D8', fontWeight: 'bold', color: '#000' }} 
-
-                      >
+                        style={{ backgroundColor: '#D8D8D8', fontWeight: 'bold', color: '#000' }}>
                         Atualizar
                       </Button>
                     </Box>

@@ -5,6 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { TokenState } from '../../../store/token/TokenReducer'
 import Postagem from '../../models/Postagem'
 import { buscaId, deleteId, post } from '../../services/Service'
+import { toast } from "react-toastify";
 
 function DeletarPostagem() {
 
@@ -12,16 +13,25 @@ function DeletarPostagem() {
 
   const { id } = useParams<{ id: string }>()
 
-  const token = useSelector<TokenState, TokenState['tokens']>(
-    (state) => state.tokens
+  const token = useSelector<TokenState, TokenState['token']>(
+    (state) => state.token
   )
 
   const [postagem, setPostagem] = useState<Postagem>();
 
   useEffect(() => {
     if(token === ''){
-      alert('Você precisa estar Logado!')
-      navigate('/login')
+      toast.warn('Você precisa estar logado.', {
+        position: 'top-right', 
+        autoClose: 2000, //2 segundos
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "light",
+    })      
+    navigate('/login')
     }
   }, [token])
 
@@ -45,9 +55,27 @@ function DeletarPostagem() {
       await deleteId(`/postagens/${id}`, {
         headers: {'Authorization': token}
       })
-      alert('Postagem deletada com Sucesso')
+      toast.success('Postagem deletada com sucesso!', {
+        position: 'top-right', 
+        autoClose: 2000, //2 segundos
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "light",
+    })
     } catch (error) {
-      alert('Erro ao Deletar')
+      toast.error('Falha ao deletar postagem.', {
+        position: 'top-right', 
+        autoClose: 2000, //2 segundos
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "light",
+    })
     }
   }
 
@@ -57,7 +85,7 @@ function DeletarPostagem() {
 
   return (
     <>
-      <Box m={2}>
+      <Box m={2} style={{marginTop:'170px'}}>
         <Card variant="outlined">
           <CardContent>
             <Box justifyContent="center">
@@ -74,7 +102,7 @@ function DeletarPostagem() {
                   onClick={sim}
                   variant="contained"
                   className="marginLeft"
-                  size="large"
+                  size="medium"
                   style={{backgroundColor: '#c21010', color: 'white'}}
                 >
                   Sim
@@ -84,7 +112,7 @@ function DeletarPostagem() {
                 <Button
                   onClick={nao}
                   variant="contained"
-                  size="large"
+                  size="medium"
                   style={{ backgroundColor: "#06283d", color: "white" }}
                 >
                   Não

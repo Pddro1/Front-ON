@@ -1,23 +1,35 @@
-.logo {
-    border-radius: 50%;
-    padding: 0.5vw;
+.backgroundHome {
+    background-color: #eef1ff;
+    padding-top: 100px;
 }
 
-.caixa {
-    background-color: #e3a731;
+.spaceBetween {
+    display: flex;
+    justify-content: center;
+}
+
+.glass1 {
+    background: rgba(157, 184, 209, 0);
+    box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    padding: 50px;
 }
 
 .titulo {
-    color: white !important;
+    color: black !important;
     font-weight: bold !important;
+    font-size: 25px !important;
 }
 
-.botao {
-    border-color: #000000 !important;
-    background-color: #140e19;
-    color: white !important;
+.subtitulo {
+    color: black !important;
+    font-weight: bold !important;
+    font-size: 20px !important;
 }
 
-.postagens {
-    background-color: white;
+.text-decorator-none {
+    text-decoration: none;
 }

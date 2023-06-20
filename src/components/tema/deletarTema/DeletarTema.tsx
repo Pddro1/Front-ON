@@ -5,18 +5,29 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { TokenState } from '../../../store/token/TokenReducer';
 import Tema from '../../models/Tema';
 import { buscaId, deleteId } from '../../services/Service';
+import { toast } from 'react-toastify';
+
 
 function DeletarTema() {
 
   let navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const token = useSelector<TokenState, TokenState['tokens']>(
-    (state) => state.tokens
+  const token = useSelector<TokenState, TokenState['token']>(
+    (state) => state.token
   )
 
   useEffect(() => {
     if(token === ''){
-      alert('Você precisa estar Logado!')
+      toast.warn('Você precisa estar logado.', {
+        position: 'top-right', 
+        autoClose: 2000, //2 segundos
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "light",
+    })
       navigate("/login")
     }
   }, [token])
@@ -44,10 +55,28 @@ function DeletarTema() {
       await deleteId(`/temas/${id}`, {
         headers: {'Authorization': token}
       })
-      alert('Tema Apagado com Sucesso!')
+      toast.success('Tema deletado com sucesso!', {
+        position: 'top-right', 
+        autoClose: 2000, //2 segundos
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "light",
+    })
       navigate('/temas')
     } catch (error) {
-      alert('Erro ao Deletar o Tema!')
+      toast.error('Falha ao deletar Tema.', {
+        position: 'top-right', 
+        autoClose: 2000, //2 segundos
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: 0,
+        theme: "light",
+    })
       navigate('/temas')
     }
   }
@@ -74,7 +103,7 @@ function DeletarTema() {
                   variant="contained"
                   className="marginLeft"
                   size="large"
-                  color="primary"
+                  style={{ backgroundColor: "#C21010", color: "white", fontWeight: 'bold' }}
                 >
                   Sim
                 </Button>
@@ -84,7 +113,7 @@ function DeletarTema() {
                   onClick={nao}
                   variant="contained"
                   size="large"
-                  color="secondary"
+                  style={{ backgroundColor: "#d8d8d8", color: "white", fontWeight: 'bold' }}
                 >
                   Não
                 </Button>

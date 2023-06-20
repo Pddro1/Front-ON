@@ -13,8 +13,8 @@ function CadastrarTema() {
 
   let navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const token = useSelector<TokenState, TokenState['tokens']>(
-    (state) => state.tokens
+  const token = useSelector<TokenState, TokenState['token']>(
+    (state) => state.token
   )
 
   const [tema, setTema] = useState<Tema>({
@@ -80,7 +80,16 @@ function CadastrarTema() {
         navigate('/temas')
 
       } catch (error) {
-        alert('Falha ao atualizar o Tema, tente novamente!')
+        toast.error('Falha ao atualizar o tema. Tente novamente.', {
+          position: 'top-right', 
+          autoClose: 2000, //2 segundos
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: 0,
+          theme: "light",
+      })
       }
     } else {
       try {
@@ -100,8 +109,16 @@ function CadastrarTema() {
       })
         navigate('/temas')
       } catch (error) {
-        alert('Falha ao Criar um Tema, tente novamente!')
-      }
+        toast.error('Falha ao cadastrar tema. Tente novamente.', {
+          position: 'top-right', 
+          autoClose: 2000, //2 segundos
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: 0,
+          theme: "light",
+      })      }
     }
   }
 
